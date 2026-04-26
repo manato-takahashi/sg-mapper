@@ -23,6 +23,27 @@ func main() {
 	}
 
 	for _, sg := range output.SecurityGroups {
-		fmt.Println(*sg.GroupId, *sg.GroupName)
+		fmt.Println("===", *sg.GroupId, *sg.GroupName, "===")
+		fmt.Println("ingress:")
+		for _, ingress := range sg.IpPermissions {
+			for _, ipRange := range ingress.IpRanges {
+				if ingress.FromPort != nil {
+					fmt.Println(*ingress.IpProtocol, *ingress.FromPort, *ingress.ToPort, *ipRange.CidrIp)
+				} else {
+					fmt.Println("* * * ", *ipRange.CidrIp)
+				}
+			}
+		}
+
+		fmt.Println("egress:")
+		for _, egress := range sg.IpPermissionsEgress {
+			for _, ipRange := range egress.IpRanges {
+				if egress.FromPort != nil {
+					fmt.Println(*egress.IpProtocol, *egress.FromPort, *egress.ToPort, *ipRange.CidrIp)
+				} else {
+					fmt.Println("* * * ", *ipRange.CidrIp)
+				}
+			}
+		}
 	}
 }
